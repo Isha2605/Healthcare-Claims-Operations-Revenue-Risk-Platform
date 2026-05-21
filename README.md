@@ -111,21 +111,21 @@ KPIs and trends at a glance - volume, total outstanding, aging distribution, pri
 > `14,176` total claims · `$2,616,097` outstanding · `434` high-priority · `14,113` aged 90+ days
 
 <p align="center">
-  <img src="./screenshots/01-command-center.png" alt="Claims Command Center - KPIs, service-month trend, priority mix" width="90%" />
+  <img src="./screenshots/command-center.png" alt="Claims Command Center - KPIs, service-month trend, priority mix" width="90%" />
 </p>
 
 ### 2. Priority Queue
 A **ranked work surface** telling the team what to review first. Filtered live from the same rules as the command center - no silent divergence between views.
 
 <p align="center">
-  <img src="./screenshots/02-priority-queue.png" alt="Priority Queue - ranked claims with priority score, age, outstanding balance" width="90%" />
+  <img src="./screenshots/priority-queue.png" alt="Priority Queue - ranked claims with priority score, age, outstanding balance" width="90%" />
 </p>
 
 ### 3. Claim Detail Workspace
 One claim, end-to-end: balances, financial rollup, clinical and payer context, and - crucially - a **"why flagged" explanation** that names the specific rule(s) that put the claim on the queue. Transparent, auditable, no black-box.
 
 <p align="center">
-  <img src="./screenshots/03-claim-detail.png" alt="Claim detail workspace with priority score, claim age, outstanding balance" width="90%" />
+  <img src="./screenshots/claim-detail.png" alt="Claim detail workspace with priority score, claim age, outstanding balance" width="90%" />
 </p>
 
 ### Operational UX
