@@ -22,15 +22,15 @@ df = load_claims()
 st.sidebar.markdown(
     """
     <div class="sidebar-brand">
-        <div class="sidebar-brand__mark">🏥</div>
+        <div class="sidebar-brand__mark">✚</div>
         <div class="sidebar-brand__title">Claims Operations</div>
-        <div class="sidebar-brand__tag">Revenue cycle · Denial triage · Live portfolio view</div>
+        <div class="sidebar-brand__tag">Revenue cycle · Denial triage · Live portfolio</div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.sidebar.markdown('<p class="sidebar-nav-label">Navigate</p>', unsafe_allow_html=True)
+st.sidebar.markdown('<p class="sidebar-nav-label">Analysis</p>', unsafe_allow_html=True)
 page = st.sidebar.radio(
     "Navigation",
     ["Command Center", "Priority Queue", "Claim Detail"],

@@ -5,214 +5,196 @@ def apply_css():
     st.markdown(
         """
         <style>
-        @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
         :root {
-            /* Slightly deeper mint-gray so white / glass panels read clearly vs. dark sidebar */
-            --bg-page: #d8e6e2;
-            --bg-page-2: #e0ebe8;
-            /* Dual-tone canvas — stronger contrast so it reads on screen (theme often overrides weak gradients) */
-            --bg-canvas-top: #a8c4b8;
-            --bg-canvas-mid: #c5d8d0;
-            --bg-canvas-bottom: #edf6f2;
+            /* Deep navy — clinical authority */
+            --navy-950: #080f20;
+            --navy-900: #0c1f3f;
+            --navy-800: #112d52;
+            --navy-700: #183d6b;
+            --navy-600: #1f5080;
+            /* Medical blue — primary action / accent */
+            --blue-600: #1a6eb5;
+            --blue-500: #2480cc;
+            --blue-400: #56a0dc;
+            --blue-100: #dbeafe;
+            /* Sky accent — section bars, highlights */
+            --sky-500: #0ea5e9;
+            --sky-300: #7dd3fc;
+            --bg-main: #eef2f7;
             --bg-card: #ffffff;
-            --border-soft: #c8dbd6;
-            --border-sidebar: #d9ebe8;
-            --teal-deep: #184b54;
-            --teal-mid: #2a6570;
-            --accent: #67c8bb;
-            --accent-soft: #e8f7f4;
-            --text-title: #20384a;
-            --text-body: #4a6573;
-            --text-muted: #607786;
-            --shadow-sm: 0 1px 2px rgba(24, 75, 84, 0.06);
-            --shadow-md: 0 8px 24px rgba(24, 75, 84, 0.08);
-            --shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.07);
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --radius-pill: 999px;
-            /* Type scale (rem) */
-            --text-display: clamp(1.9rem, 2.8vw, 2.45rem);
-            --text-lead: 1.0625rem;
-            --text-section: 0.9375rem;
-            --text-kpi-value: clamp(1.55rem, 2.15vw, 2rem);
-            --text-kpi-value-lg: clamp(1.75rem, 2.45vw, 2.2rem);
-            --leading-tight: 1.12;
-            --leading-snug: 1.45;
-            --leading-body: 1.58;
-            --space-content-max: 1320px;
-            --space-band: 2rem;
-            --space-section: 1.35rem;
+            --border: #dde3ec;
+            --border-strong: #c8d2e0;
+            --text-900: #0d1b2a;
+            --text-700: #2d3f52;
+            --text-500: #5a6e82;
+            --text-400: #8fa0b0;
+            --red-600: #dc2626;
+            --amber-600: #d97706;
+            --green-600: #059669;
+            --shadow-sm: 0 1px 3px rgba(8,20,48,0.08), 0 1px 2px rgba(8,20,48,0.05);
+            --shadow-md: 0 4px 16px rgba(8,20,48,0.10);
+            --radius: 10px;
+            --radius-sm: 6px;
         }
 
         html, body, [class*="css"] {
-            font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif !important;
         }
 
-        /* Let Streamlit’s canvas show through — theme often sets opaque grays on html/body */
-        html,
-        body {
-            background: transparent !important;
+        /* Clean light-gray main background */
+        .stApp,
+        [data-testid="stAppViewContainer"] {
+            background-color: var(--bg-main) !important;
+            background-image: none !important;
         }
 
-        /* Main column: readable measure + centered — must stay transparent so dual-tone is visible in margins */
+        html, body {
+            background: var(--bg-main) !important;
+        }
+
         [data-testid="stMain"] {
-            max-width: var(--space-content-max) !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-            padding: 1.65rem clamp(1.25rem, 3vw, 2.25rem) 3rem !important;
-            box-sizing: border-box;
             background: transparent !important;
+            max-width: 1380px !important;
+            margin: 0 auto !important;
+            padding: 4.5rem 2rem 3rem !important;
+            box-sizing: border-box;
         }
 
         [data-testid="stMain"] .block-container {
             background: transparent !important;
-        }
-
-        /* !important beats Streamlit theme inline background on these roots */
-        .stApp,
-        [data-testid="stAppViewContainer"] {
-            background-color: var(--bg-canvas-mid) !important;
-            /* Top = cooler slate-mint; bottom = airy recovery green. Cross grid + vignettes on top */
-            background-image:
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23184b54' stroke-opacity='0.085' stroke-width='1.1'%3E%3Cpath d='M24 8v32M8 24h32'/%3E%3C/g%3E%3C/svg%3E"),
-                radial-gradient(ellipse 70% 55% at 100% 0%, rgba(103, 200, 187, 0.22) 0%, transparent 52%),
-                radial-gradient(ellipse 55% 50% at 0% 100%, rgba(24, 75, 84, 0.07) 0%, transparent 50%),
-                linear-gradient(
-                    175deg,
-                    var(--bg-canvas-top) 0%,
-                    #b6cfc4 14%,
-                    var(--bg-canvas-mid) 36%,
-                    #d6e8e1 62%,
-                    var(--bg-canvas-bottom) 100%
-                ) !important;
-            background-repeat: repeat, no-repeat, no-repeat, no-repeat !important;
-            background-size: 48px 48px, auto, auto, auto !important;
-            background-position: 0 0, 0 0, 0 0, 0 0 !important;
-            background-attachment: scroll !important;
+            padding: 0 !important;
+            max-width: none !important;
         }
 
         [data-testid="stHeader"] {
-            background: linear-gradient(
-                180deg,
-                rgba(190, 210, 204, 0.55) 0%,
-                rgba(220, 235, 230, 0.35) 100%
-            );
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(24, 75, 84, 0.11);
+            background: rgba(243, 244, 248, 0.92) !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
         }
 
+        /* ── SIDEBAR ─────────────────────────────────────── */
         section[data-testid="stSidebar"] {
-            background: linear-gradient(165deg, #0a2f36 0%, #0e3b44 38%, #124b54 72%, #15606a 100%);
-            min-width: 288px !important;
-            max-width: 288px !important;
-            border-right: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 8px 0 40px rgba(8, 40, 46, 0.35);
+            background: linear-gradient(175deg, var(--navy-950) 0%, var(--navy-900) 45%, var(--navy-800) 100%) !important;
+            min-width: 230px !important;
+            max-width: 230px !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
         }
 
         section[data-testid="stSidebar"] .block-container {
-            padding-top: 1.5rem;
-            padding-bottom: 2rem;
+            padding: 1.35rem 1rem 2rem !important;
         }
 
-        /* Sidebar: default light text (inputs opt out below) */
         section[data-testid="stSidebar"] {
-            color: rgba(255, 255, 255, 0.92) !important;
+            color: rgba(255, 255, 255, 0.85) !important;
         }
 
-        /* —— Brand —— */
+        /* Brand */
         .sidebar-brand {
-            padding: 0.15rem 0 1.1rem 0;
-            margin-bottom: 0.25rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+            padding-bottom: 1.1rem;
+            margin-bottom: 0.35rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .sidebar-brand__mark {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: var(--radius-md);
-            background: rgba(255, 255, 255, 0.14);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            color: #ffffff !important;
-            font-size: 1.25rem;
-            margin-bottom: 0.65rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(8px);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--blue-500);
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 900;
+            margin-bottom: 0.6rem;
+            box-shadow: 0 4px 12px rgba(36, 128, 204, 0.4);
         }
 
         .sidebar-brand__title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
+            font-size: 0.88rem;
+            font-weight: 700;
             color: #ffffff !important;
             line-height: 1.2;
-            margin: 0 0 0.35rem 0;
+            margin: 0 0 0.2rem 0;
+            letter-spacing: -0.01em;
         }
 
         .sidebar-brand__tag {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.72) !important;
-            letter-spacing: 0.02em;
-            line-height: 1.35;
+            font-size: 0.67rem;
+            color: rgba(255, 255, 255, 0.45) !important;
+            letter-spacing: 0.015em;
+            line-height: 1.4;
         }
 
+        /* Section labels */
         .sidebar-nav-label,
         .sidebar-filters-label {
-            font-size: 0.68rem;
-            font-weight: 800;
-            letter-spacing: 0.14em;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.48) !important;
-            margin: 1rem 0 0.5rem 0;
+            color: rgba(255, 255, 255, 0.36) !important;
+            margin: 1rem 0 0.4rem 0;
         }
 
         .sidebar-filters-label {
-            margin-top: 1.25rem;
+            margin-top: 1.4rem;
             padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Sidebar radio — Streamlit nests caption text in p/span with theme colors; force white */
+        /* Radio nav items */
         section[data-testid="stSidebar"] [data-testid="stRadio"] label {
-            padding: 0.45rem 0.65rem !important;
-            margin: 0.2rem 0 !important;
-            border-radius: var(--radius-md) !important;
+            padding: 0.38rem 0.65rem !important;
+            margin: 0.1rem 0 !important;
+            border-radius: var(--radius-sm) !important;
             border: 1px solid transparent !important;
-            transition: background 0.15s ease, border-color 0.15s ease;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
+            color: rgba(255, 255, 255, 0.65) !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.65) !important;
+            font-size: 0.84rem !important;
+            font-weight: 500 !important;
+            transition: background 0.14s ease, color 0.14s ease;
         }
 
         section[data-testid="stSidebar"] [data-testid="stRadio"] label p,
         section[data-testid="stSidebar"] [data-testid="stRadio"] label span,
         section[data-testid="stSidebar"] [data-testid="stRadio"] label div {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-        }
-
-        section[data-testid="stSidebar"] [data-testid="stRadio"] [data-testid="stMarkdownContainer"] p,
-        section[data-testid="stSidebar"] [data-testid="stRadio"] [data-testid="stMarkdownContainer"] span {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
+            color: rgba(255, 255, 255, 0.65) !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.65) !important;
         }
 
         section[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
             background: rgba(255, 255, 255, 0.08) !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+
+        section[data-testid="stSidebar"] [data-testid="stRadio"] label:hover p,
+        section[data-testid="stSidebar"] [data-testid="stRadio"] label:hover span {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
 
         section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
-            background: rgba(255, 255, 255, 0.16) !important;
-            border-color: rgba(255, 255, 255, 0.28) !important;
-            font-weight: 700 !important;
+            background: var(--blue-600) !important;
+            border-color: rgba(26, 110, 181, 0.5) !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(26, 110, 181, 0.35) !important;
+        }
+
+        section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) p,
+        section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) span,
+        section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) div {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
 
         section[data-testid="stSidebar"] [data-testid="stRadio"] input[type="radio"] {
-            accent-color: #7fe8d8;
+            accent-color: var(--blue-400);
         }
 
         section[data-testid="stSidebar"] h1,
@@ -223,410 +205,395 @@ def apply_css():
 
         section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
         section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] span {
-            color: rgba(255, 255, 255, 0.9) !important;
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-size: 0.74rem !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.08em !important;
         }
 
-        section[data-testid="stSidebar"] .stCaption {
-            color: rgba(255, 255, 255, 0.72) !important;
-        }
-
-        /* Controls: white surfaces, dark typography (multiselect, search) */
+        /* Sidebar controls */
         section[data-testid="stSidebar"] [data-baseweb="select"] > div {
-            background: #ffffff !important;
-            color: #184b54 !important;
-            border: 1px solid rgba(24, 75, 84, 0.12) !important;
-            border-radius: var(--radius-md) !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: var(--radius-sm) !important;
+            color: rgba(255, 255, 255, 0.88) !important;
+        }
+
+        section[data-testid="stSidebar"] [data-baseweb="select"] input,
+        section[data-testid="stSidebar"] [data-baseweb="select"] [data-testid="stMarkdownContainer"] p {
+            color: rgba(255, 255, 255, 0.88) !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.88) !important;
         }
 
         section[data-testid="stSidebar"] [data-baseweb="select"] svg {
-            fill: #184b54 !important;
+            fill: rgba(255, 255, 255, 0.55) !important;
         }
 
         section[data-testid="stSidebar"] [data-baseweb="tag"] {
-            background: #e8f7f4 !important;
-            color: #0f4a52 !important;
-            border: 1px solid rgba(103, 200, 187, 0.45) !important;
+            background: rgba(36, 128, 204, 0.25) !important;
+            color: #bae6fd !important;
+            border: 1px solid rgba(36, 128, 204, 0.5) !important;
         }
 
         section[data-testid="stSidebar"] .stTextInput > div > div {
-            background: #ffffff !important;
-            border: 1px solid rgba(24, 75, 84, 0.12) !important;
-            border-radius: var(--radius-md) !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: var(--radius-sm) !important;
         }
 
         section[data-testid="stSidebar"] .stTextInput input {
-            background: #ffffff !important;
-            color: #184b54 !important;
+            background: transparent !important;
+            color: rgba(255, 255, 255, 0.88) !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.88) !important;
             border: none !important;
-            border-radius: var(--radius-md) !important;
         }
 
         section[data-testid="stSidebar"] .stTextInput input::placeholder {
-            color: #6b8790 !important;
+            color: rgba(255, 255, 255, 0.32) !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.32) !important;
         }
 
-        /* Slider: white surface; label stays above on teal */
         section[data-testid="stSidebar"] [data-baseweb="slider"] {
-            background: rgba(255, 255, 255, 0.97) !important;
-            border-radius: var(--radius-md) !important;
-            border: 1px solid rgba(24, 75, 84, 0.1) !important;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12) !important;
-            padding: 0.55rem 0.75rem 0.65rem 0.75rem !important;
-            margin-bottom: 0.35rem !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border-radius: var(--radius-sm) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 0.5rem 0.75rem 0.6rem !important;
         }
 
         section[data-testid="stSidebar"] [data-testid="stTickBarMin"],
         section[data-testid="stSidebar"] [data-testid="stTickBarMax"] {
-            color: #40616b !important;
+            color: rgba(255, 255, 255, 0.38) !important;
         }
 
-        /* —— Page hero —— */
+        /* ── PAGE HERO ──────────────────────────────────── */
         .page-hero {
-            margin-bottom: var(--space-band);
-            padding-bottom: 1.35rem;
-            border-bottom: 1px solid rgba(24, 75, 84, 0.11);
-        }
-
-        .page-hero__accent {
-            width: 52px;
-            height: 4px;
-            border-radius: var(--radius-pill);
-            background: linear-gradient(90deg, var(--accent) 0%, #2a9d8f 55%, #1f7a70 100%);
-            margin-bottom: 1.05rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
         }
 
         .page-title {
-            font-size: var(--text-display);
+            font-size: clamp(1.5rem, 2.5vw, 1.9rem);
             font-weight: 800;
-            color: var(--text-title);
-            letter-spacing: -0.045em;
-            line-height: var(--leading-tight);
-            margin: 0 0 0.55rem 0;
+            color: var(--text-900);
+            letter-spacing: -0.035em;
+            line-height: 1.15;
+            margin: 0 0 0.3rem 0;
         }
 
         .page-subtitle {
-            color: var(--text-body);
-            font-size: var(--text-lead);
+            color: var(--text-500);
+            font-size: 0.875rem;
             font-weight: 400;
-            line-height: var(--leading-body);
-            max-width: 40rem;
+            line-height: 1.55;
             margin: 0;
+            max-width: 52rem;
+        }
+
+        /* ── ALERT BANNER ───────────────────────────────── */
+        .alert-banner {
+            background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 100%);
+            border-radius: var(--radius);
+            padding: 0.8rem 1.1rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            border: 1px solid rgba(26, 110, 181, 0.25);
+            box-shadow: 0 2px 10px rgba(8, 20, 48, 0.2);
+        }
+
+        .alert-banner__icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .alert-banner__title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--sky-300);
+            margin-bottom: 0.15rem;
             letter-spacing: -0.01em;
         }
 
-        /* Vertical rhythm between major bands (used with section_spacer()) */
-        .section-spacer--sm { height: 0.65rem; }
-        .section-spacer--md { height: 1.2rem; }
-        .section-spacer--lg { height: 2.15rem; }
-        .section-spacer--xl { height: 2.75rem; }
-
-        /* —— KPI —— */
-        .kpi-card {
-            background: linear-gradient(165deg, #ffffff 0%, #f7faf9 100%);
-            border: 1px solid rgba(24, 75, 84, 0.11);
-            border-radius: var(--radius-lg);
-            padding: 1.2rem 1.3rem 1.15rem 1.3rem;
-            min-height: 120px;
-            box-shadow:
-                0 1px 0 rgba(255, 255, 255, 0.9) inset,
-                0 8px 32px rgba(8, 42, 48, 0.08),
-                0 2px 10px rgba(8, 42, 48, 0.04);
-            margin-bottom: 0.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+        .alert-banner__body {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.68);
+            line-height: 1.45;
         }
 
-        .kpi-card::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: linear-gradient(180deg, var(--accent) 0%, #3a9e91 100%);
-            border-radius: 4px 0 0 4px;
+        /* ── SPACERS ────────────────────────────────────── */
+        .section-spacer--sm { height: 0.5rem; }
+        .section-spacer--md { height: 0.9rem; }
+        .section-spacer--lg { height: 1.4rem; }
+        .section-spacer--xl { height: 2rem; }
+
+        /* ── KPI CARDS ──────────────────────────────────── */
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.95rem 1.1rem 0.9rem;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.18s ease, transform 0.18s ease;
         }
 
         .kpi-card:hover {
-            border-color: rgba(24, 75, 84, 0.14);
-            box-shadow:
-                0 1px 0 rgba(255, 255, 255, 0.95) inset,
-                0 12px 40px rgba(8, 42, 48, 0.1),
-                0 4px 14px rgba(8, 42, 48, 0.05);
-            transform: translateY(-2px);
-        }
-
-        /* Primary KPI row: slightly larger numbers + stronger frame */
-        .kpi-card--emphasis {
-            min-height: 132px;
-            padding-top: 1.3rem;
-            border-color: rgba(24, 75, 84, 0.13);
-            background: linear-gradient(165deg, #ffffff 0%, #f4faf9 100%);
-        }
-
-        .kpi-card--emphasis::before {
-            width: 5px;
-            background: linear-gradient(180deg, #7ad4c8 0%, var(--accent) 45%, #2a8f82 100%);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
         }
 
         .kpi-label {
-            color: var(--text-muted);
-            font-size: 0.6875rem;
+            font-size: 0.615rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            margin-bottom: 0.55rem;
-            padding-left: 0.45rem;
-            line-height: var(--leading-snug);
+            color: var(--text-400);
+            margin-bottom: 0.38rem;
         }
 
         .kpi-value {
-            color: var(--text-title);
-            font-size: var(--text-kpi-value);
+            font-size: 1.6rem;
             font-weight: 800;
-            line-height: var(--leading-tight);
-            font-variant-numeric: tabular-nums;
-            padding-left: 0.45rem;
+            color: var(--text-900);
+            line-height: 1.1;
             letter-spacing: -0.03em;
+            font-variant-numeric: tabular-nums;
         }
 
         .kpi-card--emphasis .kpi-value {
-            font-size: var(--text-kpi-value-lg);
+            color: var(--navy-800);
+            font-size: 1.8rem;
         }
 
-        /* —— Panels —— */
-        .section-heading {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            color: var(--text-title);
-            font-size: var(--text-section);
-            font-weight: 700;
-            letter-spacing: -0.025em;
-            margin: 0.1rem 0 0.65rem 0;
-            padding-bottom: 0.65rem;
-            border-bottom: 1px solid rgba(24, 75, 84, 0.075);
-            line-height: var(--leading-snug);
+        .kpi-sublabel {
+            font-size: 0.7rem;
+            color: var(--text-400);
+            margin-top: 0.18rem;
         }
 
-        .section-heading::before {
-            content: "";
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #8fe0d4 0%, var(--accent) 55%, #2a8f82 100%);
-            box-shadow: 0 0 0 3px rgba(103, 200, 187, 0.22);
-            flex-shrink: 0;
-        }
-
-        /* Chart / table: stronger glass + crisp edge so charts don’t melt into the page */
+        /* ── PANELS ─────────────────────────────────────── */
         [data-testid="stMain"] div[data-testid="stVerticalBlockBorderWrapper"] {
-            margin-bottom: var(--space-section) !important;
+            margin-bottom: 1rem !important;
         }
 
         div[data-testid="stVerticalBlockBorderWrapper"] {
-            background: linear-gradient(
-                165deg,
-                rgba(255, 255, 255, 0.92) 0%,
-                rgba(255, 255, 255, 0.78) 100%
-            ) !important;
-            backdrop-filter: blur(22px) saturate(170%);
-            -webkit-backdrop-filter: blur(22px) saturate(170%);
-            border: 1px solid rgba(24, 75, 84, 0.12) !important;
-            border-radius: var(--radius-lg) !important;
-            box-shadow:
-                0 0 0 1px rgba(255, 255, 255, 0.55) inset,
-                0 1px 0 rgba(255, 255, 255, 0.65) inset,
-                0 14px 44px -12px rgba(6, 32, 38, 0.22),
-                0 6px 20px rgba(8, 42, 48, 0.08) !important;
-            padding: 0.85rem 1rem 1.1rem 1rem !important;
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: var(--shadow-sm) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            padding: 1rem 1.1rem 1.1rem !important;
         }
 
-        /* Plotly sits on a faint “mat” so the figure edge is visible inside the glass */
+        /* Section headings — medical blue left-bar accent */
+        .section-heading {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-900);
+            letter-spacing: -0.02em;
+            margin: 0 0 0.7rem 0;
+            padding: 0 0 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+            border-left: 3px solid var(--sky-500);
+            line-height: 1.3;
+        }
+
+        /* Plotly mat */
         [data-testid="stMain"] [data-testid="stPlotlyChart"] {
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(24, 75, 84, 0.07);
-            background: rgba(255, 255, 255, 0.55);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
-            padding: 0.35rem 0.4rem 0.15rem 0.4rem;
-            margin-top: 0.15rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: #fafafa;
+            padding: 0.2rem 0.3rem 0.1rem;
+            margin-top: 0.1rem;
         }
 
-        /* Data grid: force light clinical theme (overrides dark / system styling) */
+        /* Data grid */
         div[data-testid="stDataFrame"] {
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             overflow: hidden;
-            border: 1px solid rgba(24, 75, 84, 0.1);
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.85),
-                0 2px 10px rgba(8, 42, 48, 0.06);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
             background: #ffffff !important;
-            margin-top: 0.15rem;
+            margin-top: 0.1rem;
             --gdg-bg-cell: #ffffff !important;
-            --gdg-bg-bubble: #f2faf8 !important;
-            --gdg-bg-header: #e4f2ef !important;
-            --gdg-bg-header-has-focus: #d4ebe6 !important;
-            --gdg-border-color: #c5ddd7 !important;
-            --gdg-text-dark: #1a3340 !important;
-            --gdg-text-medium: #3d5c66 !important;
-            --gdg-text-light: #5f7a82 !important;
-            --gdg-text-group-header: #0f3d45 !important;
-            --gdg-accent-color: #2a8f82 !important;
-            --gdg-accent-light: rgba(42, 143, 130, 0.16) !important;
+            --gdg-bg-bubble: #f9fafb !important;
+            --gdg-bg-header: #f9fafb !important;
+            --gdg-bg-header-has-focus: #f3f4f6 !important;
+            --gdg-border-color: #e5e7eb !important;
+            --gdg-text-dark: #111827 !important;
+            --gdg-text-medium: #374151 !important;
+            --gdg-text-light: #6b7280 !important;
+            --gdg-text-group-header: #111827 !important;
+            --gdg-accent-color: #1a6eb5 !important;
+            --gdg-accent-light: rgba(26, 110, 181, 0.12) !important;
             --gdg-accent-fg: #ffffff !important;
-            --gdg-link-color: #0b5c52 !important;
-            --gdg-font-family: "DM Sans", system-ui, sans-serif !important;
+            --gdg-link-color: #1a6eb5 !important;
+            --gdg-font-family: "Inter", system-ui, sans-serif !important;
             --gdg-header-font-style: 600 12px !important;
             --gdg-editor-font-size: 13px !important;
         }
 
-        /* Glide theme vars are often applied on an inner wrapper — mirror here */
         div[data-testid="stDataFrame"] > div {
             --gdg-bg-cell: #ffffff !important;
-            --gdg-bg-bubble: #f2faf8 !important;
-            --gdg-bg-header: #e4f2ef !important;
-            --gdg-bg-header-has-focus: #d4ebe6 !important;
-            --gdg-border-color: #c5ddd7 !important;
-            --gdg-text-dark: #1a3340 !important;
-            --gdg-text-medium: #3d5c66 !important;
-            --gdg-text-light: #5f7a82 !important;
-            --gdg-text-group-header: #0f3d45 !important;
-            --gdg-accent-color: #2a8f82 !important;
-            --gdg-accent-light: rgba(42, 143, 130, 0.16) !important;
-            --gdg-accent-fg: #ffffff !important;
-            --gdg-link-color: #0b5c52 !important;
-            --gdg-font-family: "DM Sans", system-ui, sans-serif !important;
+            --gdg-bg-header: #f0f5fb !important;
+            --gdg-border-color: #dde3ec !important;
+            --gdg-text-dark: #0d1b2a !important;
+            --gdg-accent-color: #1a6eb5 !important;
+            --gdg-accent-light: rgba(26, 110, 181, 0.12) !important;
+            --gdg-font-family: "Inter", system-ui, sans-serif !important;
         }
 
         /* Tabs */
-        [data-testid="stMain"] [data-testid="stWidgetLabel"] p {
-            font-weight: 600 !important;
-            letter-spacing: -0.015em !important;
-            color: var(--text-title) !important;
-        }
-
         .stTabs [data-baseweb="tab-list"] {
-            gap: 0.35rem;
-            background: rgba(232, 247, 244, 0.65);
-            padding: 0.4rem;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(24, 75, 84, 0.08);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            gap: 0.2rem;
+            background: #f3f4f6;
+            padding: 0.28rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
         }
 
         .stTabs [data-baseweb="tab"] {
-            border-radius: 10px !important;
+            border-radius: 5px !important;
             font-weight: 600 !important;
-            color: var(--text-muted) !important;
+            font-size: 0.83rem !important;
+            color: var(--text-500) !important;
+            padding: 0.32rem 0.85rem !important;
         }
 
         .stTabs [aria-selected="true"] {
             background: #ffffff !important;
-            color: var(--teal-deep) !important;
+            color: var(--blue-600) !important;
             box-shadow: var(--shadow-sm) !important;
         }
 
-        /* Buttons & alerts */
+        /* Buttons */
         .stButton > button {
-            border-radius: var(--radius-md) !important;
-            font-weight: 700 !important;
+            border-radius: var(--radius-sm) !important;
+            font-weight: 600 !important;
             border: none !important;
-            background: linear-gradient(135deg, var(--teal-deep) 0%, #1f5f6a 100%) !important;
+            background: var(--blue-600) !important;
             color: #ffffff !important;
-            padding: 0.45rem 1.1rem !important;
-            box-shadow: 0 4px 14px rgba(24, 75, 84, 0.25) !important;
+            padding: 0.38rem 1rem !important;
+            font-size: 0.84rem !important;
+            box-shadow: 0 2px 8px rgba(26, 110, 181, 0.28) !important;
+            transition: background 0.15s ease, box-shadow 0.15s ease !important;
         }
 
         .stButton > button:hover {
-            box-shadow: 0 6px 20px rgba(24, 75, 84, 0.32) !important;
+            background: var(--blue-500) !important;
+            box-shadow: 0 4px 14px rgba(26, 110, 181, 0.38) !important;
         }
 
         div[data-testid="stAlert"] {
-            border-radius: var(--radius-md) !important;
-            border: 1px solid var(--border-soft) !important;
+            border-radius: var(--radius-sm) !important;
         }
 
-        /* Badges */
+        /* Priority badges */
         .badge-high {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: var(--radius-pill);
-            background: linear-gradient(180deg, #ffeef0 0%, #ffe6e8 100%);
-            color: #b42318;
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #fef2f2;
+            color: #b91c1c;
             font-weight: 700;
-            font-size: 0.82rem;
-            border: 1px solid rgba(235, 106, 106, 0.25);
+            font-size: 0.78rem;
+            border: 1px solid #fecaca;
         }
 
         .badge-medium {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: var(--radius-pill);
-            background: linear-gradient(180deg, #fff8e8 0%, #fff4d8 100%);
-            color: #a15c07;
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #fffbeb;
+            color: #b45309;
             font-weight: 700;
-            font-size: 0.82rem;
-            border: 1px solid rgba(241, 180, 88, 0.35);
+            font-size: 0.78rem;
+            border: 1px solid #fde68a;
         }
 
         .badge-low {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: var(--radius-pill);
-            background: linear-gradient(180deg, #eefbf9 0%, #def7f3 100%);
-            color: #0f766e;
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #ecfdf5;
+            color: #047857;
             font-weight: 700;
-            font-size: 0.82rem;
-            border: 1px solid rgba(105, 184, 175, 0.35);
+            font-size: 0.78rem;
+            border: 1px solid #a7f3d0;
         }
 
-        /* Insight / prose blocks */
+        /* Insight block — "Why Flagged" navy gradient card */
         .insight-block {
-            background: linear-gradient(135deg, #fafdfd 0%, #f3faf9 100%);
-            border: 1px solid var(--border-soft);
-            border-radius: var(--radius-md);
-            padding: 1rem 1.15rem;
-            margin-top: 0.5rem;
+            background: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--blue-600) 100%);
+            border-radius: var(--radius);
+            padding: 1.4rem 1.5rem;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-block::before {
+            content: "";
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .insight-block h3 {
-            font-size: 0.78rem;
-            font-weight: 800;
+            font-size: 0.65rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted) !important;
-            margin: 0 0 0.65rem 0;
+            letter-spacing: 0.12em;
+            color: rgba(255, 255, 255, 0.55) !important;
+            margin: 0 0 0.55rem 0;
         }
 
         .insight-list {
             margin: 0;
-            padding-left: 1.1rem;
-            color: var(--text-title);
-            font-size: 0.95rem;
+            padding-left: 1rem;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 0.9rem;
             line-height: 1.65;
         }
 
         .insight-list li {
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.3rem;
         }
 
         .hint-text {
-            font-size: 0.88rem;
-            color: var(--text-muted);
-            margin-top: 0.35rem;
+            font-size: 0.8rem;
+            color: var(--text-500);
+            margin-top: 0.3rem;
         }
 
+        /* Main selectbox / inputs */
         [data-testid="stMain"] [data-baseweb="select"] > div {
-            border-radius: var(--radius-md) !important;
-            border-color: #cfe3e0 !important;
+            border-radius: var(--radius-sm) !important;
+            border-color: var(--border-strong) !important;
+            font-size: 0.875rem !important;
         }
 
         [data-testid="stMain"] .stTextInput input {
-            border-radius: var(--radius-md) !important;
-            border-color: #cfe3e0 !important;
+            border-radius: var(--radius-sm) !important;
+            border-color: var(--border-strong) !important;
+        }
+
+        [data-testid="stMain"] [data-testid="stWidgetLabel"] p {
+            font-weight: 600 !important;
+            font-size: 0.84rem !important;
+            color: var(--text-700) !important;
+            letter-spacing: -0.01em !important;
         }
         </style>
         """,
@@ -638,22 +605,38 @@ def format_currency(x):
     return f"${x:,.0f}"
 
 
-def render_kpi(col, label, value, *, emphasis: bool = False):
+def render_kpi(col, label, value, *, emphasis: bool = False, sublabel: str = ""):
     mod = " kpi-card--emphasis" if emphasis else ""
+    sub_html = f'<div class="kpi-sublabel">{sublabel}</div>' if sublabel else ""
     with col:
         st.markdown(
             f"""
             <div class="kpi-card{mod}">
                 <div class="kpi-label">{label}</div>
                 <div class="kpi-value">{value}</div>
+                {sub_html}
             </div>
             """,
             unsafe_allow_html=True,
         )
 
 
+def render_alert_banner(title: str, body: str, icon: str = "⚡") -> None:
+    st.markdown(
+        f"""
+        <div class="alert-banner">
+            <div class="alert-banner__icon">{icon}</div>
+            <div>
+                <div class="alert-banner__title">{title}</div>
+                <div class="alert-banner__body">{body}</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def section_spacer(size: str = "md") -> None:
-    """Vertical rhythm between hero / KPI bands and chart sections."""
     cls = {
         "sm": "section-spacer--sm",
         "md": "section-spacer--md",
@@ -675,7 +658,7 @@ def priority_badge(value):
 
 
 def apply_sidebar_filters(df):
-    st.sidebar.markdown('<p class="sidebar-filters-label">Data filters</p>', unsafe_allow_html=True)
+    st.sidebar.markdown('<p class="sidebar-filters-label">Data Filters</p>', unsafe_allow_html=True)
 
     orgs = sorted(df["organization_name"].dropna().astype(str).unique().tolist())
     providers = sorted(df["provider_name"].dropna().astype(str).unique().tolist())
@@ -717,8 +700,8 @@ def apply_sidebar_filters(df):
         filtered = filtered[filtered["status_primary"].isin(selected_statuses)]
 
     filtered = filtered[
-        (filtered["latest_outstanding"] >= out_range[0]) &
-        (filtered["latest_outstanding"] <= out_range[1])
+        (filtered["latest_outstanding"] >= out_range[0])
+        & (filtered["latest_outstanding"] <= out_range[1])
     ]
 
     if claim_search:

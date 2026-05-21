@@ -3,46 +3,73 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from ui_helpers import format_currency, priority_badge, render_kpi, section_spacer
+from ui_helpers import (
+    format_currency,
+    priority_badge,
+    render_alert_banner,
+    render_kpi,
+    section_spacer,
+)
 
 
 PLOT_CONFIG = {"displayModeBar": False, "responsive": True}
 
+# Healthcare-appropriate palette — medical blues + clinical status colors
+COLOR_PRIMARY   = "#2480cc"  # medical blue
+COLOR_PRIMARY2  = "#56a0dc"  # blue-400
+COLOR_HIGH      = "#dc2626"  # clinical red — urgent
+COLOR_MEDIUM    = "#d97706"  # amber — attention
+COLOR_LOW       = "#16a34a"  # clinical green — stable
 
-def style_fig(fig, height=360, *, bars: bool = False):
-    layout_kwargs = dict(
+AGE_COLORS = {
+    "0-30 days":  "#2480cc",
+    "31-60 days": "#7db9e8",
+    "61-90 days": "#d97706",
+    "90+ days":   "#dc2626",
+    "unknown":    "#c8d2e0",
+}
+
+PRIORITY_COLORS = {
+    "high":   COLOR_HIGH,
+    "medium": COLOR_MEDIUM,
+    "low":    COLOR_LOW,
+}
+
+
+def style_fig(fig, height=340, *, bars: bool = False):
+    kwargs = dict(
         template="plotly_white",
-        paper_bgcolor="rgba(255,255,255,0)",
-        plot_bgcolor="rgba(252, 254, 253, 0.94)",
-        font=dict(family="DM Sans, sans-serif", color="#20384a", size=13),
+        paper_bgcolor="rgba(250,250,250,0)",
+        plot_bgcolor="rgba(250,250,250,0)",
+        font=dict(family="Inter, system-ui, sans-serif", color="#2d3f52", size=12),
         margin=dict(l=10, r=10, t=10, b=10),
         height=height,
         legend_title_text="",
         hoverlabel=dict(
             bgcolor="#ffffff",
-            font_size=13,
-            font_family="DM Sans, sans-serif",
-            bordercolor="#c8dbd6",
+            font_size=12,
+            font_family="Inter, system-ui, sans-serif",
+            bordercolor="#e5e7eb",
         ),
     )
     if bars:
-        layout_kwargs["bargap"] = 0.28
-    fig.update_layout(**layout_kwargs)
+        kwargs["bargap"] = 0.3
+    fig.update_layout(**kwargs)
     fig.update_xaxes(
         title=None,
         showgrid=False,
         zeroline=False,
-        linecolor="#b8d4ce",
-        tickfont=dict(color="#4d6570", size=12),
-        ticklen=4,
+        linecolor="#e5e7eb",
+        tickfont=dict(color="#5a6e82", size=11),
+        ticklen=3,
     )
     fig.update_yaxes(
         title=None,
-        gridcolor="rgba(24, 75, 84, 0.06)",
+        gridcolor="rgba(8,20,48,0.05)",
         zeroline=False,
-        linecolor="#b8d4ce",
-        tickfont=dict(color="#4d6570", size=12),
-        ticklen=4,
+        linecolor="#dde3ec",
+        tickfont=dict(color="#5a6e82", size=11),
+        ticklen=3,
     )
     return fig
 
@@ -55,7 +82,6 @@ def render_page_hero(title, subtitle):
     st.markdown(
         f"""
         <div class="page-hero">
-            <div class="page-hero__accent"></div>
             <div class="page-title">{title}</div>
             <div class="page-subtitle">{subtitle}</div>
         </div>
@@ -70,7 +96,7 @@ def render_panel_title(title):
 
 def render_command_center(filtered_df):
     render_page_hero(
-        "Claims command center",
+        "Claims Command Center",
         "Monitor volume, outstanding balances, aging, and priority mix across your portfolio in one operational view.",
     )
 
@@ -81,19 +107,27 @@ def render_command_center(filtered_df):
     avg_txn = filtered_df["transaction_count"].mean() if total_claims else 0
     aged_90 = (filtered_df["claim_age_bucket"] == "90+ days").sum()
 
-    r1c1, r1c2, r1c3 = st.columns(3, gap="large")
-    render_kpi(r1c1, "Total Claims", f"{total_claims:,}", emphasis=True)
-    render_kpi(r1c2, "Total Outstanding", format_currency(total_outstanding), emphasis=True)
-    render_kpi(r1c3, "High Priority Claims", f"{high_priority_count:,}", emphasis=True)
+    render_alert_banner(
+        "Live Portfolio Snapshot",
+        f"{high_priority_count:,} high-priority claims across {total_claims:,} open claims — "
+        f"{format_currency(total_outstanding)} total outstanding requires active triage.",
+    )
 
-    r2c1, r2c2, r2c3 = st.columns(3, gap="large")
-    render_kpi(r2c1, "Avg Outstanding", format_currency(avg_outstanding))
-    render_kpi(r2c2, "Avg Transactions", f"{avg_txn:.1f}")
-    render_kpi(r2c3, "Claims Aged 90+", f"{aged_90:,}")
+    r1c1, r1c2, r1c3 = st.columns(3, gap="medium")
+    render_kpi(r1c1, "Total Claims", f"{total_claims:,}", emphasis=True, sublabel="open in portfolio")
+    render_kpi(r1c2, "Total Outstanding", format_currency(total_outstanding), emphasis=True, sublabel="across all claims")
+    render_kpi(r1c3, "High Priority Claims", f"{high_priority_count:,}", emphasis=True, sublabel="require immediate action")
+
+    section_spacer("sm")
+
+    r2c1, r2c2, r2c3 = st.columns(3, gap="medium")
+    render_kpi(r2c1, "Avg Outstanding", format_currency(avg_outstanding), sublabel="per claim")
+    render_kpi(r2c2, "Avg Transactions", f"{avg_txn:.1f}", sublabel="per claim")
+    render_kpi(r2c3, "Claims Aged 90+", f"{aged_90:,}", sublabel="days since service")
 
     section_spacer("lg")
 
-    left, right = st.columns([1.45, 1], gap="large")
+    left, right = st.columns([1.45, 1], gap="medium")
 
     with left:
         with st.container(border=True):
@@ -110,12 +144,12 @@ def render_command_center(filtered_df):
                 x="service_month",
                 y="claim_count",
                 markers=True,
-                color_discrete_sequence=["#2a8f82"],
+                color_discrete_sequence=[COLOR_PRIMARY],
             )
-            style_fig(fig1, height=360)
+            style_fig(fig1, height=340)
             fig1.update_traces(
                 line=dict(width=2.5),
-                marker=dict(size=9, line=dict(width=1, color="#ffffff")),
+                marker=dict(size=8, line=dict(width=1.5, color="#ffffff")),
             )
             st.plotly_chart(fig1, use_container_width=True, config=PLOT_CONFIG)
 
@@ -139,18 +173,14 @@ def render_command_center(filtered_df):
                 x="financial_priority_bucket",
                 y="claim_count",
                 color="financial_priority_bucket",
-                color_discrete_map={
-                    "high": "#eb6a6a",
-                    "medium": "#f1b458",
-                    "low": "#69b8af",
-                },
+                color_discrete_map=PRIORITY_COLORS,
             )
-            style_fig(fig2, height=360, bars=True)
+            style_fig(fig2, height=340, bars=True)
             polish_bars(fig2)
             fig2.update_layout(showlegend=False)
             st.plotly_chart(fig2, use_container_width=True, config=PLOT_CONFIG)
 
-    left2, right2 = st.columns(2, gap="large")
+    left2, right2 = st.columns(2, gap="medium")
 
     with left2:
         with st.container(border=True):
@@ -167,9 +197,9 @@ def render_command_center(filtered_df):
                 x="latest_outstanding",
                 y="organization_name",
                 orientation="h",
-                color_discrete_sequence=["#8ccdc5"],
+                color_discrete_sequence=[COLOR_PRIMARY2],
             )
-            style_fig(fig3, height=400, bars=True)
+            style_fig(fig3, height=380, bars=True)
             polish_bars(fig3)
             fig3.update_layout(yaxis={"categoryorder": "total ascending"})
             st.plotly_chart(fig3, use_container_width=True, config=PLOT_CONFIG)
@@ -194,15 +224,9 @@ def render_command_center(filtered_df):
                 x="claim_age_bucket",
                 y="claim_count",
                 color="claim_age_bucket",
-                color_discrete_map={
-                    "0-30 days": "#67c8bb",
-                    "31-60 days": "#9cd8d1",
-                    "61-90 days": "#f5c37a",
-                    "90+ days": "#e4aaaa",
-                    "unknown": "#d6dde3",
-                },
+                color_discrete_map=AGE_COLORS,
             )
-            style_fig(fig4, height=400, bars=True)
+            style_fig(fig4, height=380, bars=True)
             polish_bars(fig4)
             fig4.update_layout(showlegend=False)
             st.plotly_chart(fig4, use_container_width=True, config=PLOT_CONFIG)
@@ -211,32 +235,34 @@ def render_command_center(filtered_df):
 
     with st.container(border=True):
         render_panel_title("Top Claims Requiring Attention")
-        top_claims = filtered_df.sort_values(
-            ["priority_score", "latest_outstanding"],
-            ascending=[False, False],
-        )[
-            [
-                "claim_id",
-                "provider_name",
-                "organization_name",
-                "service_date",
-                "latest_outstanding",
-                "claim_age_bucket",
-                "financial_priority_bucket",
-                "priority_score",
+        top_claims = (
+            filtered_df.sort_values(
+                ["priority_score", "latest_outstanding"],
+                ascending=[False, False],
+            )[
+                [
+                    "claim_id",
+                    "provider_name",
+                    "organization_name",
+                    "service_date",
+                    "latest_outstanding",
+                    "claim_age_bucket",
+                    "financial_priority_bucket",
+                    "priority_score",
+                ]
             ]
-        ].head(10).copy()
-
+            .head(10)
+            .copy()
+        )
         top_claims["service_date"] = top_claims["service_date"].dt.strftime("%Y-%m-%d")
         top_claims["latest_outstanding"] = top_claims["latest_outstanding"].map(format_currency)
-
         st.dataframe(top_claims, use_container_width=True, hide_index=True)
 
 
 def render_priority_queue(filtered_df):
     render_page_hero(
-        "Priority queue",
-        "Ranked view of claims that deserve attention first—filtered live from the same rules as your command center.",
+        "Priority Queue",
+        "Ranked view of claims that deserve attention first — filtered live from the same rules as your command center.",
     )
 
     total_filtered = len(filtered_df)
@@ -245,18 +271,26 @@ def render_priority_queue(filtered_df):
     avg_age = filtered_df["claim_age_days"].dropna().mean() if total_filtered else 0
     avg_priority_score = filtered_df["priority_score"].mean() if total_filtered else 0
 
-    c1, c2, c3 = st.columns(3, gap="large")
-    render_kpi(c1, "Filtered Claims", f"{total_filtered:,}", emphasis=True)
-    render_kpi(c2, "High Priority", f"{high_priority:,}", emphasis=True)
-    render_kpi(c3, "Filtered Outstanding", format_currency(filtered_outstanding), emphasis=True)
+    render_alert_banner(
+        "Queue Snapshot",
+        f"{high_priority:,} high-priority claims out of {total_filtered:,} total — avg age {avg_age:.0f} days.",
+        icon="📋",
+    )
 
-    c4, c5 = st.columns(2, gap="large")
-    render_kpi(c4, "Avg Claim Age", f"{avg_age:.0f} days")
-    render_kpi(c5, "Avg Priority Score", f"{avg_priority_score:.1f}")
+    c1, c2, c3 = st.columns(3, gap="medium")
+    render_kpi(c1, "Filtered Claims", f"{total_filtered:,}", emphasis=True, sublabel="matching current filters")
+    render_kpi(c2, "High Priority", f"{high_priority:,}", emphasis=True, sublabel="require immediate action")
+    render_kpi(c3, "Filtered Outstanding", format_currency(filtered_outstanding), emphasis=True, sublabel="total balance")
+
+    section_spacer("sm")
+
+    c4, c5 = st.columns(2, gap="medium")
+    render_kpi(c4, "Avg Claim Age", f"{avg_age:.0f} days", sublabel="since service date")
+    render_kpi(c5, "Avg Priority Score", f"{avg_priority_score:.1f}", sublabel="composite score")
 
     section_spacer("lg")
 
-    left, right = st.columns([1.15, 1], gap="large")
+    left, right = st.columns([1.15, 1], gap="medium")
 
     with left:
         with st.container(border=True):
@@ -278,13 +312,9 @@ def render_priority_queue(filtered_df):
                 x="financial_priority_bucket",
                 y="claim_count",
                 color="financial_priority_bucket",
-                color_discrete_map={
-                    "high": "#eb6a6a",
-                    "medium": "#f1b458",
-                    "low": "#69b8af",
-                },
+                color_discrete_map=PRIORITY_COLORS,
             )
-            style_fig(fig1, height=320, bars=True)
+            style_fig(fig1, height=300, bars=True)
             polish_bars(fig1)
             fig1.update_layout(showlegend=False)
             st.plotly_chart(fig1, use_container_width=True, config=PLOT_CONFIG)
@@ -309,15 +339,9 @@ def render_priority_queue(filtered_df):
                 x="claim_age_bucket",
                 y="claim_count",
                 color="claim_age_bucket",
-                color_discrete_map={
-                    "0-30 days": "#67c8bb",
-                    "31-60 days": "#9cd8d1",
-                    "61-90 days": "#f5c37a",
-                    "90+ days": "#e4aaaa",
-                    "unknown": "#d6dde3",
-                },
+                color_discrete_map=AGE_COLORS,
             )
-            style_fig(fig2, height=320, bars=True)
+            style_fig(fig2, height=300, bars=True)
             polish_bars(fig2)
             fig2.update_layout(showlegend=False)
             st.plotly_chart(fig2, use_container_width=True, config=PLOT_CONFIG)
@@ -362,7 +386,7 @@ def render_priority_queue(filtered_df):
                 st.session_state.selected_claim_id = selected_claim
                 st.success(f"Claim {selected_claim} is now selected.")
                 st.markdown(
-                    '<p class="hint-text">Switch to <strong>Claim detail</strong> in the sidebar to open the full workspace.</p>',
+                    '<p class="hint-text">Switch to <strong>Claim Detail</strong> in the sidebar to open the full workspace.</p>',
                     unsafe_allow_html=True,
                 )
         else:
@@ -371,7 +395,7 @@ def render_priority_queue(filtered_df):
 
 def render_claim_detail(filtered_df):
     render_page_hero(
-        "Claim detail workspace",
+        "Claim Detail Workspace",
         "Inspect a single claim end-to-end: balances, clinical and payer context, and the rationale behind its priority score.",
     )
 
@@ -390,18 +414,32 @@ def render_claim_detail(filtered_df):
 
     claim_row = filtered_df[filtered_df["claim_id"].astype(str) == str(selected_claim_id)].iloc[0]
 
-    c1, c2, c3 = st.columns(3, gap="large")
+    render_alert_banner(
+        f"Claim {claim_row['claim_id']}",
+        f"Priority bucket: {str(claim_row['financial_priority_bucket']).upper()} · "
+        f"Score: {claim_row['priority_score']:.0f} · "
+        f"Outstanding: {format_currency(claim_row['latest_outstanding'])} · "
+        f"Age: {claim_row['claim_age_days']:.0f} days",
+        icon="🔍",
+    )
+
+    c1, c2, c3 = st.columns(3, gap="medium")
     render_kpi(c1, "Claim ID", str(claim_row["claim_id"]), emphasis=True)
-    render_kpi(c2, "Priority Score", f"{claim_row['priority_score']:.0f}", emphasis=True)
+    render_kpi(c2, "Priority Score", f"{claim_row['priority_score']:.0f}", emphasis=True, sublabel="composite score")
     render_kpi(c3, "Latest Outstanding", format_currency(claim_row["latest_outstanding"]), emphasis=True)
 
-    c4, c5 = st.columns(2, gap="large")
+    section_spacer("sm")
+
+    c4, c5 = st.columns(2, gap="medium")
     render_kpi(
         c4,
         "Claim Age",
-        f"{claim_row['claim_age_days']:.0f} days" if pd.notnull(claim_row["claim_age_days"]) else "N/A",
+        f"{claim_row['claim_age_days']:.0f} days"
+        if pd.notnull(claim_row["claim_age_days"])
+        else "N/A",
+        sublabel="since service date",
     )
-    render_kpi(c5, "Transactions", f"{claim_row['transaction_count']:.0f}")
+    render_kpi(c5, "Transactions", f"{claim_row['transaction_count']:.0f}", sublabel="total recorded")
 
     section_spacer("lg")
 
@@ -422,7 +460,9 @@ def render_claim_detail(filtered_df):
                     ],
                     "Value": [
                         claim_row["claim_id"],
-                        claim_row["service_date"].strftime("%Y-%m-%d") if pd.notnull(claim_row["service_date"]) else "N/A",
+                        claim_row["service_date"].strftime("%Y-%m-%d")
+                        if pd.notnull(claim_row["service_date"])
+                        else "N/A",
                         claim_row["status_primary"],
                         claim_row["status_secondary"],
                         claim_row["status_patient"],
@@ -516,8 +556,8 @@ def render_claim_detail(filtered_df):
 
             st.markdown(
                 f"""
-                <div class="insight-block" style="margin-top: 1rem;">
-                    <h3>Financial priority bucket</h3>
+                <div class="insight-block" style="margin-top: 0.75rem;">
+                    <h3>Financial Priority Bucket</h3>
                     {priority_badge(claim_row["financial_priority_bucket"])}
                 </div>
                 """,
